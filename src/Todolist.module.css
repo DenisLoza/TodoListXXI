@@ -1,0 +1,11 @@
+.tasks button {
+    margin-left: 5px;
+    width: 15px;
+    height: 15px;
+    background-color: brown;
+    border: none;
+}
+.tasks button:hover {
+    background-repeat: no-repeat;
+    background-image:  url(img/trash_15.png);
+}
