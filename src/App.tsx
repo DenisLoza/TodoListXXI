@@ -1,42 +1,42 @@
 import React, {useState} from "react"
 import "./App.css"
 import {TodoList} from "./Todolist"
-import {tasksState1, todoListsState} from "./store/state"
+import {tasksState1, taskStateType, todoListsState} from "./store/state"
 
 
-function App() {
+function changeFilter(tasks1: Array<taskStateType>, value: filteredTasksType): Array<taskStateType> {
+  if (value === "All")
+    return tasks1
+  if (value === "Active")
+    return tasks1.filter(t => t.isDone)
+  if (value === "Completed")
+    return tasks1.filter(t => !t.isDone)
+  else return tasks1
+}
 
-  let [tasks1, setTasks1] = useState(tasksState1)
-  let [taskFilter, setTaskFilter] = useState("All")
+function deleteTask(tasks1: Array<taskStateType>, taskId: string): Array<taskStateType> {
+  // создаем массив и отправляем туда те таски,
+  // чей id НЕ совпадает с приходящим из колбека
+  return tasks1.filter(t => t.id !== taskId)
+}
 
-  function removeTask(taskId: string) {
-    // создаем массив и отправляем туда те таски,
-    // чей id НЕ совпадает с приходящим из колбека
-    let filtredTasks = tasks1.filter(t => t.id !== taskId)
-    setTasks1(filtredTasks)
-  }
+export function App() {
+  let [tasks1, setTasks1] = useState<Array<taskStateType>>(tasksState1)
+  let [taskFilter, setTaskFilter] = useState<filteredTasksType>("All")
 
-  function changeFilter(value: "All" | "Active" | "Completed") {
-    setTaskFilter(value)
-  }
-
-  let filtredTasks = tasks1
-  if (taskFilter === "Active") {
-    filtredTasks = tasks1.filter(t => t.isDone)
-  }
-  if (taskFilter === "Completed") {
-    filtredTasks = tasks1.filter(t => !t.isDone)
-  }
+  const filteredTasks = changeFilter(tasks1, taskFilter)
+  const deleteTaskCallback = (taskId: string) => setTasks1(deleteTask(tasks1, taskId));
 
   return (
     <div className={`App`}>
       <TodoList id={todoListsState[0].id}
                 title={todoListsState[0].title}
-                tasks={filtredTasks}
-                changeFilter={changeFilter}
-                removeTask={removeTask}
+                tasks={filteredTasks}
+                setTaskFilter={setTaskFilter}
+                deleteTaskCallback={deleteTaskCallback}
       />
     </div>
   )
 }
-export default App
+
+export type filteredTasksType = "All" | "Active" | "Completed"

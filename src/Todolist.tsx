@@ -1,6 +1,7 @@
 import React from "react"
 import {taskStateType} from "./store/state"
 import style from "./Todolist.module.css"
+import {filteredTasksType} from "./App"
 
 export function TodoList(props: TodoListType) {
   // в переменную title присваиваем props.title
@@ -13,7 +14,7 @@ export function TodoList(props: TodoListType) {
              checked={t.isDone}
       />
       <span>{t.title}</span>
-      <button onClick={() => {props.removeTask(t.id)}}> </button>
+      <button onClick={() => {props.deleteTaskCallback(t.id)}}> </button>
     </li>
     )
   } )
@@ -30,9 +31,9 @@ export function TodoList(props: TodoListType) {
         {task}
       </ul>
       <div>
-        <button onClick={() => {props.changeFilter("All")}}>All</button>
-        <button onClick={() => {props.changeFilter("Active")}}>Active</button>
-        <button onClick={() => {props.changeFilter("Completed")}}>Completed</button>
+        <button onClick={() => {props.setTaskFilter("All")}}>All</button>
+        <button onClick={() => {props.setTaskFilter("Active")}}>Active</button>
+        <button onClick={() => {props.setTaskFilter("Completed")}}>Completed</button>
       </div>
     </div>
   )
@@ -42,6 +43,6 @@ type TodoListType = {
   id: string
   title: string
   tasks: Array<taskStateType>
-  removeTask: (taskId: string) => void
-  changeFilter: (value: "All" | "Active" | "Completed") => void
+  deleteTaskCallback: (taskId: string) => void
+  setTaskFilter: (value: filteredTasksType) => void
 }
