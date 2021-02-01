@@ -2,6 +2,7 @@ import React, {useState} from "react"
 import "./App.css"
 import {TodoList} from "./Todolist"
 import {tasksState1, taskStateType, todoListsState} from "./store/state"
+import {v1} from "uuid"
 
 
 function changeFilter(tasks1: Array<taskStateType>, value: filteredTasksType): Array<taskStateType> {
@@ -20,12 +21,22 @@ function deleteTask(tasks1: Array<taskStateType>, taskId: string): Array<taskSta
   return tasks1.filter(t => t.id !== taskId)
 }
 
+function addTask(tasks1: Array<taskStateType>, titleTask: string): Array<taskStateType> {
+  let newTask = {id: v1(), title: titleTask, isDone: false}
+  let newTasks = [newTask, ...tasks1]
+  return newTasks
+}
+
 export function App() {
+
+  // хук следит за изменениями (удаление, добавление новых) в массиве тасок
   let [tasks1, setTasks1] = useState<Array<taskStateType>>(tasksState1)
+  // хук следит за фильтрацией тасок в массиве по признаку "All", "Active", "Completed"
   let [taskFilter, setTaskFilter] = useState<filteredTasksType>("All")
 
   const filteredTasks = changeFilter(tasks1, taskFilter)
   const deleteTaskCallback = (taskId: string) => setTasks1(deleteTask(tasks1, taskId));
+  const addTaskCallback = (titleTask: string) => setTasks1(addTask(tasks1, titleTask))
 
   return (
     <div className={`App`}>
@@ -34,6 +45,7 @@ export function App() {
                 tasks={filteredTasks}
                 setTaskFilter={setTaskFilter}
                 deleteTaskCallback={deleteTaskCallback}
+                addTaskCallback={addTaskCallback}
       />
     </div>
   )

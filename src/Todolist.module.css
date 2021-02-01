@@ -1,11 +1,23 @@
+button {
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 2px;
+}
+
+button:hover {
+    border-color: brown;
+}
+
 .tasks button {
     margin-left: 5px;
     width: 15px;
     height: 15px;
     background-color: brown;
     border: none;
+    border-radius: 3px;
 }
+
 .tasks button:hover {
     background-repeat: no-repeat;
-    background-image:  url(img/trash_15.png);
+    background-image: url(img/trash_15.png);
 }
