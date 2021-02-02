@@ -15,6 +15,16 @@ function changeFilter(tasks1: Array<taskStateType>, value: filteredTasksType): A
   else return tasks1
 }
 
+function changeTaskStatus(tasks1: Array<taskStateType>, taskId: string, isDone: boolean): Array<taskStateType> {
+  // фактичеки в task приходит только один объект из массива
+  let task = tasks1.filter(t => t.id === taskId)
+  if (task) {
+    // поэтому в данном случае он будет всегда иметь индекс 0
+    task[0].isDone = isDone
+  }
+  return [...tasks1]
+}
+
 function deleteTask(tasks1: Array<taskStateType>, taskId: string): Array<taskStateType> {
   // создаем массив и отправляем туда те таски,
   // чей id НЕ совпадает с приходящим из колбека
@@ -37,15 +47,18 @@ export function App() {
   const filteredTasks = changeFilter(tasks1, taskFilter)
   const deleteTaskCallback = (taskId: string) => setTasks1(deleteTask(tasks1, taskId));
   const addTaskCallback = (titleTask: string) => setTasks1(addTask(tasks1, titleTask))
+  const changeTaskStatusCallback = (taskId: string, isDone: boolean) => setTasks1(changeTaskStatus(tasks1, taskId, isDone))
 
   return (
     <div className={`App`}>
       <TodoList id={todoListsState[0].id}
                 title={todoListsState[0].title}
                 tasks={filteredTasks}
+                taskFilter={taskFilter}
                 setTaskFilter={setTaskFilter}
                 deleteTaskCallback={deleteTaskCallback}
                 addTaskCallback={addTaskCallback}
+                changeTaskStatusCallback={changeTaskStatusCallback}
       />
     </div>
   )
