@@ -1,7 +1,18 @@
 import React, {ChangeEvent, useState} from "react"
-import {taskStateType} from "./store/state"
+import {filteredTasksType, taskStateType} from "./store/state"
 import style from "./Todolist.module.css"
-import {filteredTasksType} from "./App"
+
+
+export type TodoListType = {
+  idTL: string
+  titleTL: string
+  tasks: Array<taskStateType>
+  taskFilterTL: filteredTasksType
+  deleteTaskCallback: (idTask: string, idTL: string) => void
+  setTaskFilter: (idTL: string, value: filteredTasksType) => void
+  addTaskCallback: (titleTask: string, idTL: string) => void
+  changeTaskStatusCallback: (idTask: string, isDone: boolean, idTL: string) => void
+}
 
 
 export function TodoList(props: TodoListType) {
@@ -11,12 +22,13 @@ export function TodoList(props: TodoListType) {
   // хук обработки ошибок при вводе данных в <input>
   let [error, setError] = useState<string | null>(null)
 
+
   // ф-ция вызывает колбек добавления новой таски и устанавливает в значение <input> пустую строку
   const setNewTaskName = () => {
     // проверка на попытку ввести пустую строку перед отправлением названия в колбэк
     if (titleTask.trim() !== "") {
       setError(null)
-      props.addTaskCallback(titleTask)
+      props.addTaskCallback(titleTask, props.idTL)
       setTitleTask("")
     } else {
       setError("Title is required!")
@@ -39,51 +51,51 @@ export function TodoList(props: TodoListType) {
 
   // фильтрация тасок по "All"
   const onClickFilterAll = () => {
-    props.setTaskFilter("All")
+    props.setTaskFilter(props.idTL,"All")
   }
   // фильтрация тасок по "Active"
   const onClickFilterActive = () => {
-    props.setTaskFilter("Active")
+    props.setTaskFilter(props.idTL,"Active")
   }
   // фильтрация тасок по "Completed"
   const onClickFilterCompleted = () => {
-    props.setTaskFilter("Completed")
+    props.setTaskFilter(props.idTL,"Completed")
   }
 
 
-  // в переменную title присваиваем props.title
-  let {title} = props
-
   // ОТДЕЛЬНАЯ ТАСКА (props.tasks MAP отдельно по каждой таске)
-  let task = props.tasks.map(t => {
+  let task = props.tasks.map(task => {
+
     const deleteTask = () => {
-      props.deleteTaskCallback(t.id)
+      props.deleteTaskCallback(task.id, props.idTL)
     }
+
     const onChangeCheckboxTaskHandler = (e: ChangeEvent<HTMLInputElement>) => {
       let newIsDoneValue = e.currentTarget.checked
-      props.changeTaskStatusCallback(t.id, newIsDoneValue)
+      props.changeTaskStatusCallback(task.id, newIsDoneValue, props.idTL)
     }
+
     return (
-      <li key={t.id}>
+      <li key={task.id}>
         <input type={"checkbox"}
-               checked={t.isDone}
+               checked={task.isDone}
                onChange={onChangeCheckboxTaskHandler}
         />
-        <span>{t.title}</span>
+        <span>{task.title}</span>
         <button onClick={deleteTask}></button>
       </li>
     )
   })
 
-  // Туду лист целиком
+  // ТУДУ ЛИСТ ЦЕЛИКОМ
   return (
     <div className={style.TodoList}>
-      <h3>{title}</h3>
+      <h3>{props.titleTL}</h3>
       <div>
         <input onChange={onChangeInputHandler}
                onKeyPress={onKeyPressHandler}
                type={"text"}
-               placeholder={"enter ..."}
+               placeholder={"enter new..."}
                value={titleTask}/>
         <button onClick={setNewTaskName}> +</button>
       </div>
@@ -95,13 +107,13 @@ export function TodoList(props: TodoListType) {
 
       </ul>
       <div>
-        <button className={props.taskFilter === "All" ? style.activeFilter : ""}
+        <button className={props.taskFilterTL === "All" ? style.activeFilter : ""}
                 onClick={onClickFilterAll}> All
         </button>
-        <button className={props.taskFilter === "Active" ? style.activeFilter : ""}
+        <button className={props.taskFilterTL === "Active" ? style.activeFilter : ""}
                 onClick={onClickFilterActive}> Active
         </button>
-        <button className={props.taskFilter === "Completed" ? style.activeFilter : ""}
+        <button className={props.taskFilterTL === "Completed" ? style.activeFilter : ""}
                 onClick={onClickFilterCompleted}> Completed
         </button>
       </div>
@@ -109,13 +121,3 @@ export function TodoList(props: TodoListType) {
   )
 }
 
-type TodoListType = {
-  id: string
-  title: string
-  tasks: Array<taskStateType>
-  taskFilter: filteredTasksType
-  deleteTaskCallback: (taskId: string) => void
-  setTaskFilter: (value: filteredTasksType) => void
-  addTaskCallback: (titleTask: string) => void
-  changeTaskStatusCallback: (taskId: string, isDone: boolean) => void
-}

@@ -4,13 +4,5 @@
 }
 
 .App > div {
-    margin-right: 50px;
-}
-
-.TodoList > ul {
-    padding: 0 0 0 10px;
-}
-
-.TodoList > ul > li {
-    list-style-type: none;
+    margin-right: 30px;
 }
