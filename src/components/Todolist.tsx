@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useState} from "react"
-import {filteredTasksType, taskStateType} from "./store/state"
+import {filteredTasksType, taskStateType} from "../store/state"
 import style from "./Todolist.module.css"
 
 
@@ -51,15 +51,15 @@ export function TodoList(props: TodoListType) {
 
   // фильтрация тасок по "All"
   const onClickFilterAll = () => {
-    props.setTaskFilter(props.idTL,"All")
+    props.setTaskFilter(props.idTL, "All")
   }
   // фильтрация тасок по "Active"
   const onClickFilterActive = () => {
-    props.setTaskFilter(props.idTL,"Active")
+    props.setTaskFilter(props.idTL, "Active")
   }
   // фильтрация тасок по "Completed"
   const onClickFilterCompleted = () => {
-    props.setTaskFilter(props.idTL,"Completed")
+    props.setTaskFilter(props.idTL, "Completed")
   }
 
 
@@ -76,46 +76,51 @@ export function TodoList(props: TodoListType) {
     }
 
     return (
-      <li key={task.id}>
+      <div className={style.task}
+           key={task.id}>
         <input type={"checkbox"}
                checked={task.isDone}
                onChange={onChangeCheckboxTaskHandler}
         />
         <span>{task.title}</span>
         <button onClick={deleteTask}></button>
-      </li>
+      </div>
     )
   })
 
   // ТУДУ ЛИСТ ЦЕЛИКОМ
   return (
-    <div className={style.TodoList}>
-      <h3>{props.titleTL}</h3>
-      <div>
-        <input onChange={onChangeInputHandler}
-               onKeyPress={onKeyPressHandler}
-               type={"text"}
-               placeholder={"enter new..."}
-               value={titleTask}/>
-        <button onClick={setNewTaskName}> +</button>
-      </div>
-      <div className={style.error}> {error} </div>
+    <div className={style.TodoListWrapper}>
+      <div className={style.TodoList}>
+        <div className={style.titleTask}>
+          {props.titleTL}
+        </div>
+        <div className={style.inputTaskName}>
+          <input onChange={onChangeInputHandler}
+                 onKeyPress={onKeyPressHandler}
+                 type={"text"}
+                 placeholder={"+ Add new task..."}
+                 value={titleTask}/>
+          <button onClick={setNewTaskName}> +</button>
+        </div>
+        <div className={style.error}> {error} </div>
 
-      <ul className={style.tasks}>
+        <div className={style.tasks}>
 
-        {task}
+          {task}
 
-      </ul>
-      <div>
-        <button className={props.taskFilterTL === "All" ? style.activeFilter : ""}
-                onClick={onClickFilterAll}> All
-        </button>
-        <button className={props.taskFilterTL === "Active" ? style.activeFilter : ""}
-                onClick={onClickFilterActive}> Active
-        </button>
-        <button className={props.taskFilterTL === "Completed" ? style.activeFilter : ""}
-                onClick={onClickFilterCompleted}> Completed
-        </button>
+        </div>
+        <div className={style.buttons}>
+          <button className={props.taskFilterTL === "All" ? style.activeFilter : ""}
+                  onClick={onClickFilterAll}> All
+          </button>
+          <button className={props.taskFilterTL === "Active" ? style.activeFilter : ""}
+                  onClick={onClickFilterActive}> Active
+          </button>
+          <button className={props.taskFilterTL === "Completed" ? style.activeFilter : ""}
+                  onClick={onClickFilterCompleted}> Completed
+          </button>
+        </div>
       </div>
     </div>
   )

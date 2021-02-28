@@ -8,7 +8,8 @@ import {
   todoListStateType,
   todoListsStateAllType,
   filteredTasksType
-} from "./store/state"
+} from "../store/state"
+import {Header} from "./Header"
 
 
 function deleteTask(idTask: string, idTL: string, allTodolists: todoListsStateAllType): todoListsStateAllType {
@@ -74,26 +75,30 @@ export function App() {
 
   return (
     <div className={`App`}>
-      {todolists.map(tl => {
-        // фильтруем каждый тудулист по значению фильтра ("All", "Active", "Done")
-        let tasksForTodoList = allTodolists[tl.id]
-        if (tl.filterTL === "Active") tasksForTodoList = tasksForTodoList.filter(t => t.isDone)
-        if (tl.filterTL === "Completed") tasksForTodoList = tasksForTodoList.filter(t => !t.isDone)
+      <Header/>
+      <div className={`TodoLists`}>
+        {todolists.map(tl => {
+          // фильтруем каждый тудулист по значению фильтра ("All", "Active", "Done")
+          let tasksForTodoList = allTodolists[tl.id]
+          if (tl.filterTL === "Active") tasksForTodoList = tasksForTodoList.filter(t => t.isDone)
+          if (tl.filterTL === "Completed") tasksForTodoList = tasksForTodoList.filter(t => !t.isDone)
 
-        return (
-          <TodoList key={tl.id}
-                    idTL={tl.id}
-                    titleTL={tl.title}
-                    taskFilterTL={tl.filterTL}
-                    tasks={tasksForTodoList}
-                    deleteTaskCallback={deleteTaskCallback}
-                    addTaskCallback={addTaskCallback}
-                    changeTaskStatusCallback={changeTaskStatusCallback}
-                    setTaskFilter={setTaskFilterCallback}
-          />
-        )
-      })
-      }
+          return (
+
+            <TodoList key={tl.id}
+                      idTL={tl.id}
+                      titleTL={tl.title}
+                      taskFilterTL={tl.filterTL}
+                      tasks={tasksForTodoList}
+                      deleteTaskCallback={deleteTaskCallback}
+                      addTaskCallback={addTaskCallback}
+                      changeTaskStatusCallback={changeTaskStatusCallback}
+                      setTaskFilter={setTaskFilterCallback}
+            />
+          )
+        })
+        }
+      </div>
     </div>
   )
 }
