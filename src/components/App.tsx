@@ -48,6 +48,20 @@ function setTaskFilter(idTL: string, value: filteredTasksType, todolists: Array<
   return newTLs
 }
 
+// 1. Удаление Todolist по его idTL
+function deleteTodolist(idTL: string, todolists: Array<todoListStateType>): Array<todoListStateType> {
+  let filteredTodolists = todolists.filter(tl => tl.id !== idTL)
+  return filteredTodolists
+}
+// 2. Удаление в общем объекте данных ключа (т.е. всех тасок) по id Тудулиста
+function clearObjectDataKey(idTL: string, allTodolists: todoListsStateAllType): todoListsStateAllType {
+  let copyData = {...allTodolists}
+  // удаляем ключ объекта по приходящему idTL
+  delete copyData[idTL]
+  return copyData
+}
+
+
 export function App() {
 
   // хук следит за изменениями (удаление, добавление новых) тудулистов
@@ -72,6 +86,11 @@ export function App() {
   const setTaskFilterCallback = (idTL: string, value: filteredTasksType) =>
     setTodolists(setTaskFilter(idTL, value, todolists))
 
+  const deleteTodolistCallback = (idTL: string) => {
+    setTodolists(deleteTodolist(idTL, todolists))
+    setAllTodolists(clearObjectDataKey(idTL, allTodolists))
+  }
+
 
   return (
     <div className={`App`}>
@@ -93,7 +112,8 @@ export function App() {
                       deleteTaskCallback={deleteTaskCallback}
                       addTaskCallback={addTaskCallback}
                       changeTaskStatusCallback={changeTaskStatusCallback}
-                      setTaskFilter={setTaskFilterCallback}
+                      setTaskFilterCallback={setTaskFilterCallback}
+                      deleteTodolistCallback={deleteTodolistCallback}
             />
           )
         })

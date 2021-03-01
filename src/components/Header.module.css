@@ -1,6 +1,7 @@
 .Header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     overflow: hidden;
     height: 40px;
     margin-bottom: 8px;
@@ -9,4 +10,9 @@
     border-radius: 4px;
     border-bottom: 1px solid #e7e8ec;
     box-shadow: 0 1px 0 0 #d3d9de, 0 0 0 1px #e7e8ec;
+    font-weight: bold;
+}
+
+a {
+    text-decoration: none;
 }

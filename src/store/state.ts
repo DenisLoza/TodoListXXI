@@ -35,7 +35,6 @@ export let todoListsStateAll: todoListsStateAllType = {
   [todolistId2]: tasksState2,
   [todolistId3]: tasksState1,
   [todolistId4]: tasksState2,
-
 }
 
 export type todoListStateType = {

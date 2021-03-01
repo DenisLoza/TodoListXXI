@@ -6,12 +6,13 @@ import style from "./Todolist.module.css"
 export type TodoListType = {
   idTL: string
   titleTL: string
-  tasks: Array<taskStateType>
   taskFilterTL: filteredTasksType
+  tasks: Array<taskStateType>
   deleteTaskCallback: (idTask: string, idTL: string) => void
-  setTaskFilter: (idTL: string, value: filteredTasksType) => void
   addTaskCallback: (titleTask: string, idTL: string) => void
   changeTaskStatusCallback: (idTask: string, isDone: boolean, idTL: string) => void
+  setTaskFilterCallback: (idTL: string, value: filteredTasksType) => void
+  deleteTodolistCallback: (idTL: string) => void
 }
 
 
@@ -23,6 +24,10 @@ export function TodoList(props: TodoListType) {
   let [error, setError] = useState<string | null>(null)
 
 
+  // следит за изменениями в <input> и сетит значение в хук useState
+  const onChangeInputHandler = (e: { currentTarget: { value: React.SetStateAction<string> } }) => {
+    setTitleTask(e.currentTarget.value)
+  }
   // ф-ция вызывает колбек добавления новой таски и устанавливает в значение <input> пустую строку
   const setNewTaskName = () => {
     // проверка на попытку ввести пустую строку перед отправлением названия в колбэк
@@ -34,7 +39,6 @@ export function TodoList(props: TodoListType) {
       setError("Title is required!")
     }
   }
-
   // если нажать Enter, когда <input> в фокусе добавит новую таску
   const onKeyPressHandler = (e: { charCode: number }) => {
     // при попытке нажать любую клавишу на клавиатуре ошибка будет сбрасываться!
@@ -44,29 +48,31 @@ export function TodoList(props: TodoListType) {
     }
   }
 
-  // следит за изменениями в <input> и сетит значение в хук useState
-  const onChangeInputHandler = (e: { currentTarget: { value: React.SetStateAction<string> } }) => {
-    setTitleTask(e.currentTarget.value)
-  }
 
   // фильтрация тасок по "All"
   const onClickFilterAll = () => {
-    props.setTaskFilter(props.idTL, "All")
+    props.setTaskFilterCallback(props.idTL, "All")
   }
   // фильтрация тасок по "Active"
   const onClickFilterActive = () => {
-    props.setTaskFilter(props.idTL, "Active")
+    props.setTaskFilterCallback(props.idTL, "Active")
   }
   // фильтрация тасок по "Completed"
   const onClickFilterCompleted = () => {
-    props.setTaskFilter(props.idTL, "Completed")
+    props.setTaskFilterCallback(props.idTL, "Completed")
+  }
+
+
+  // ф-ция вызывает колбэк для удаления Тудулиста целиком по его id
+  const onDeleteTodolist = () => {
+    props.deleteTodolistCallback(props.idTL)
   }
 
 
   // ОТДЕЛЬНАЯ ТАСКА (props.tasks MAP отдельно по каждой таске)
   let task = props.tasks.map(task => {
 
-    const deleteTask = () => {
+    const onDeleteTask = () => {
       props.deleteTaskCallback(task.id, props.idTL)
     }
 
@@ -83,7 +89,7 @@ export function TodoList(props: TodoListType) {
                onChange={onChangeCheckboxTaskHandler}
         />
         <span>{task.title}</span>
-        <button onClick={deleteTask}></button>
+        <button onClick={onDeleteTask}></button>
       </div>
     )
   })
@@ -94,13 +100,15 @@ export function TodoList(props: TodoListType) {
       <div className={style.TodoList}>
         <div className={style.titleTask}>
           {props.titleTL}
+          <button onClick={onDeleteTodolist}></button>
         </div>
         <div className={style.inputTaskName}>
-          <input onChange={onChangeInputHandler}
-                 onKeyPress={onKeyPressHandler}
-                 type={"text"}
+          <input type={"text"}
                  placeholder={"+ Add new task..."}
-                 value={titleTask}/>
+                 value={titleTask}
+                 onChange={onChangeInputHandler}
+                 onKeyPress={onKeyPressHandler}
+          />
           <button onClick={setNewTaskName}> +</button>
         </div>
         <div className={style.error}> {error} </div>
