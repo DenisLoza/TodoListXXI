@@ -18,14 +18,14 @@
     position: relative;
 }
 
-.titleTask {
+.titleTL {
     padding: 4px;
     font-size: 18px;
     font-weight: bold;
     text-align: center;
     cursor: pointer;
 }
-.titleTask button {
+.titleTL button {
     margin-left: 5px;
     width: 15px;
     height: 15px;
@@ -34,14 +34,13 @@
     border-radius: 3px;
 }
 
-.titleTask button:hover {
+.titleTL button:hover {
     background-repeat: no-repeat;
     background-image: url(../img/trash_15.png);
 }
 
-.inputTaskName input {
-    width: 164px;
-    border-radius: 4px;
+.inputTaskName {
+
 }
 
 .tasks {
@@ -71,24 +70,19 @@
     cursor: pointer;
 }
 
-.buttons {
+.buttonsFilter {
     display: flex;
     justify-content: center;
 }
-button {
+.buttonsFilter button {
     border-radius: 4px;
     cursor: pointer;
     margin-left: 4px;
 }
-button:hover {
+.buttonsFilter button:hover {
     border-color: brown;
 }
-.activeFilter {
+.buttonsActiveFilter {
     background-color: brown;
     color: white;
-}
-
-.error {
-    font-size: 12px;
-    color: red;
 }

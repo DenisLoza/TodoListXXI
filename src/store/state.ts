@@ -27,9 +27,7 @@ export let todoListsState: Array<todoListStateType> = [
   {id: todolistId3, title: "XXX", filterTL: "All"},
   {id: todolistId4, title: "LLL", filterTL: "All"},
 ]
-export type todoListsStateAllType = {
-  [todolistId: string]: Array<taskStateType>
-}
+
 export let todoListsStateAll: todoListsStateAllType = {
   [todolistId1]: tasksState1,
   [todolistId2]: tasksState2,
@@ -37,6 +35,9 @@ export let todoListsStateAll: todoListsStateAllType = {
   [todolistId4]: tasksState2,
 }
 
+export type todoListsStateAllType = {
+  [todolistId: string]: Array<taskStateType>
+}
 export type todoListStateType = {
   id: string
   title: string

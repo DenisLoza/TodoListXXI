@@ -1,0 +1,17 @@
+.AddItemForm input {
+    width: 164px;
+    border-radius: 4px;
+}
+.AddItemForm button {
+    cursor: pointer;
+    border-radius: 4px;
+    margin-left: 4px;
+}
+.AddItemForm button:hover {
+    border-color: brown;
+}
+
+.error {
+    font-size: 12px;
+    color: red;
+}

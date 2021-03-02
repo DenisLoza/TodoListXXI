@@ -7,9 +7,10 @@ import {
   todoListsStateAll,
   todoListStateType,
   todoListsStateAllType,
-  filteredTasksType
+  filteredTasksType, taskStateType
 } from "../store/state"
 import {Header} from "./Header"
+import {SubHeader} from "./SubHeader"
 
 
 function deleteTask(idTask: string, idTL: string, allTodolists: todoListsStateAllType): todoListsStateAllType {
@@ -25,7 +26,7 @@ function deleteTask(idTask: string, idTL: string, allTodolists: todoListsStateAl
 
 function addTask(titleTask: string, idTL: string, allTodolists: todoListsStateAllType): todoListsStateAllType {
   let tasks = allTodolists[idTL]
-  let newTask = {id: v1(), title: titleTask, isDone: false}
+  let newTask: taskStateType = {id: v1(), title: titleTask, isDone: false}
   let newTasks = [newTask, ...tasks]
   let newTodolist = {[idTL]: newTasks}
   return {...allTodolists, ...newTodolist}
@@ -61,6 +62,16 @@ function clearObjectDataKey(idTL: string, allTodolists: todoListsStateAllType): 
   return copyData
 }
 
+// 1. Добавление нового Todolist по его titleTL (имени) в массив
+function addTodolist(idTL: string, titleTL: string, todolists: Array<todoListStateType>): Array<todoListStateType> {
+  let newTL: todoListStateType = {id: idTL, title: titleTL, filterTL: "All"}
+  return [newTL,...todolists]
+}
+// 2. Добавление нового ключа Todolist по его idTL в общий объект данных
+function addObjectDataKey(idTL: string, titleTL: string, allTodolists: todoListsStateAllType): todoListsStateAllType {
+  let newObjectTL = {[idTL]: []}
+  return {...allTodolists, ...newObjectTL}
+}
 
 export function App() {
 
@@ -91,10 +102,20 @@ export function App() {
     setAllTodolists(clearObjectDataKey(idTL, allTodolists))
   }
 
+  const addTodolistCallback = (titleTL: string) => {
+    // генерация нового id для нового Todolist
+    // т.к. нужен одинаковый id для двух функций
+    let newIdTL = v1()
+    setTodolists(addTodolist(newIdTL, titleTL, todolists))
+    setAllTodolists(addObjectDataKey(newIdTL, titleTL, allTodolists))
+  }
 
-  return (
+
+
+  return <>
     <div className={`App`}>
       <Header/>
+      <SubHeader addTodolistCallback={addTodolistCallback}/>
       <div className={`TodoLists`}>
         {todolists.map(tl => {
           // фильтруем каждый тудулист по значению фильтра ("All", "Active", "Done")
@@ -103,7 +124,6 @@ export function App() {
           if (tl.filterTL === "Completed") tasksForTodoList = tasksForTodoList.filter(t => !t.isDone)
 
           return (
-
             <TodoList key={tl.id}
                       idTL={tl.id}
                       titleTL={tl.title}
@@ -120,7 +140,7 @@ export function App() {
         }
       </div>
     </div>
-  )
+  </>
 }
 
 
