@@ -4,9 +4,11 @@
     display: inline-block;
     vertical-align: top;
 }
+
 .TodoListWrapper:first-child {
     margin-left: 8px;
 }
+
 .TodoList {
     width: 200px;
     padding: 4px;
@@ -25,6 +27,7 @@
     text-align: center;
     cursor: pointer;
 }
+
 .titleTL button {
     margin-left: 5px;
     width: 15px;
@@ -48,6 +51,7 @@
     padding: 0 0 0 16px;
     list-style-type: none;
 }
+
 .tasks button {
     margin-left: 5px;
     width: 15px;
@@ -56,16 +60,19 @@
     border: none;
     border-radius: 3px;
 }
+
 .tasks button:hover {
     background-repeat: no-repeat;
     background-image: url(../img/trash_15.png);
 }
+
 .task {
     max-width: 180px;
     margin-bottom: 1px;
     /*переносит тескст на след строку, даже если нет пробелов*/
     word-wrap: break-word;
 }
+
 .task > input:hover {
     cursor: pointer;
 }
@@ -74,14 +81,17 @@
     display: flex;
     justify-content: center;
 }
+
 .buttonsFilter button {
     border-radius: 4px;
     cursor: pointer;
     margin-left: 4px;
 }
+
 .buttonsFilter button:hover {
     border-color: brown;
 }
+
 .buttonsActiveFilter {
     background-color: brown;
     color: white;

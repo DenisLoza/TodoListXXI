@@ -32,7 +32,7 @@ function addTask(titleTask: string, idTL: string, allTodolists: todoListsStateAl
   return {...allTodolists, ...newTodolist}
 }
 
-function changeTaskStatus(idTask: string, isDone: boolean, idTL: string, allTodolists: todoListsStateAllType): todoListsStateAllType {
+function changeStatusTask(isDone: boolean, idTask: string, idTL: string, allTodolists: todoListsStateAllType): todoListsStateAllType {
   let tasks = allTodolists[idTL]
   // создаем новый массив тасок через .map Таска у которой id совпадает с приходящей в пропсах
   // меняем у нее св-ва isDone на приходящее из пропсов, если id не совпадает возвращаем таску в массив
@@ -42,10 +42,25 @@ function changeTaskStatus(idTask: string, isDone: boolean, idTL: string, allTodo
   return {...allTodolists, ...newTodolist}
 }
 
-// колбек устанавливает значение фильтра для каждого Тудулиста
-function setTaskFilter(idTL: string, value: filteredTasksType, todolists: Array<todoListStateType>): Array<todoListStateType> {
+function changeTitleTask(titleTask: string, idTask: string, idTL: string, allTodolists: todoListsStateAllType): todoListsStateAllType {
+  let tasks = allTodolists[idTL]
+  let newTasks = tasks.map(
+    task => task.id === idTask ? {...task, title: titleTask} : task)
+  let newTodolist = {[idTL]: newTasks}
+  return {...allTodolists, ...newTodolist}
+}
+
+// колбек устанавливает значение фильтра ("All", "Active", "Completed") для каждого Тудулиста в отдельности
+function setFilterTodolist(newFilterTL: filteredTasksType, idTL: string, todolists: Array<todoListStateType>): Array<todoListStateType> {
   let newTLs = todolists.map(
-    tl => tl.id === idTL ? {...tl, filterTL: value} : tl)
+    tl => tl.id === idTL ? {...tl, filterTL: newFilterTL} : tl)
+  return newTLs
+}
+
+// устанавливает отредактированное значение имени для Todolist
+function changeTitleTodolist(titleTL: string, idTL: string, todolists: Array<todoListStateType>): Array<todoListStateType> {
+  let newTLs = todolists.map(
+    tl => tl.id === idTL ? {...tl, title: titleTL} : tl)
   return newTLs
 }
 
@@ -54,6 +69,7 @@ function deleteTodolist(idTL: string, todolists: Array<todoListStateType>): Arra
   let filteredTodolists = todolists.filter(tl => tl.id !== idTL)
   return filteredTodolists
 }
+
 // 2. Удаление в общем объекте данных ключа (т.е. всех тасок) по id Тудулиста
 function clearObjectDataKey(idTL: string, allTodolists: todoListsStateAllType): todoListsStateAllType {
   let copyData = {...allTodolists}
@@ -65,8 +81,9 @@ function clearObjectDataKey(idTL: string, allTodolists: todoListsStateAllType): 
 // 1. Добавление нового Todolist по его titleTL (имени) в массив
 function addTodolist(idTL: string, titleTL: string, todolists: Array<todoListStateType>): Array<todoListStateType> {
   let newTL: todoListStateType = {id: idTL, title: titleTL, filterTL: "All"}
-  return [newTL,...todolists]
+  return [newTL, ...todolists]
 }
+
 // 2. Добавление нового ключа Todolist по его idTL в общий объект данных
 function addObjectDataKey(idTL: string, titleTL: string, allTodolists: todoListsStateAllType): todoListsStateAllType {
   let newObjectTL = {[idTL]: []}
@@ -91,11 +108,18 @@ export function App() {
   const addTaskCallback = (titleTask: string, idTL: string) =>
     setAllTodolists(addTask(titleTask, idTL, allTodolists))
 
-  const changeTaskStatusCallback = (idTask: string, isDone: boolean, idTL: string) =>
-    setAllTodolists(changeTaskStatus(idTask, isDone, idTL, allTodolists))
+  const changeStatusTaskCallback = (isDone: boolean, idTask: string, idTL: string) =>
+    setAllTodolists(changeStatusTask(isDone, idTask, idTL, allTodolists))
 
-  const setTaskFilterCallback = (idTL: string, value: filteredTasksType) =>
-    setTodolists(setTaskFilter(idTL, value, todolists))
+  const changeTitleTaskCallback = (titleTask: string, idTask: string, idTL: string) =>
+    setAllTodolists(changeTitleTask(titleTask, idTask, idTL, allTodolists))
+
+  const setFilterTodolistCallback = (newFilterTL: filteredTasksType, idTL: string) =>
+    setTodolists(setFilterTodolist(newFilterTL, idTL, todolists))
+
+  const changeTitleTodolistCallback = (titleTL: string, idTL: string) => {
+    setTodolists(changeTitleTodolist(titleTL, idTL, todolists))
+  }
 
   const deleteTodolistCallback = (idTL: string) => {
     setTodolists(deleteTodolist(idTL, todolists))
@@ -109,7 +133,6 @@ export function App() {
     setTodolists(addTodolist(newIdTL, titleTL, todolists))
     setAllTodolists(addObjectDataKey(newIdTL, titleTL, allTodolists))
   }
-
 
 
   return <>
@@ -127,13 +150,15 @@ export function App() {
             <TodoList key={tl.id}
                       idTL={tl.id}
                       titleTL={tl.title}
-                      taskFilterTL={tl.filterTL}
+                      tasksFilterTL={tl.filterTL}
                       tasks={tasksForTodoList}
                       deleteTaskCallback={deleteTaskCallback}
                       addTaskCallback={addTaskCallback}
-                      changeTaskStatusCallback={changeTaskStatusCallback}
-                      setTaskFilterCallback={setTaskFilterCallback}
+                      changeStatusTaskCallback={changeStatusTaskCallback}
+                      changeTitleTaskCallback={changeTitleTaskCallback}
+                      setFilterTodolistCallback={setFilterTodolistCallback}
                       deleteTodolistCallback={deleteTodolistCallback}
+                      changeTitleTodolistCallback={changeTitleTodolistCallback}
             />
           )
         })

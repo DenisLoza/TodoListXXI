@@ -2,35 +2,37 @@ import React, {ChangeEvent} from "react"
 import {filteredTasksType, taskStateType} from "../store/state"
 import style from "./Todolist.module.css"
 import {AddItemForm} from "../modules/AddItemForm"
+import {EditableSpan} from "../modules/EditableSpan"
 
 
 export type TodoListType = {
   idTL: string
   titleTL: string
-  taskFilterTL: filteredTasksType
+  tasksFilterTL: filteredTasksType
   tasks: Array<taskStateType>
   deleteTaskCallback: (idTask: string, idTL: string) => void
   addTaskCallback: (titleTask: string, idTL: string) => void
-  changeTaskStatusCallback: (idTask: string, isDone: boolean, idTL: string) => void
-  setTaskFilterCallback: (idTL: string, value: filteredTasksType) => void
+  changeStatusTaskCallback: (isDone: boolean, idTask: string, idTL: string) => void
+  changeTitleTaskCallback: (titleTask: string, idTask: string, idTL: string) => void
+  setFilterTodolistCallback: (newFilterTL: filteredTasksType, idTL: string) => void
   deleteTodolistCallback: (idTL: string) => void
+  changeTitleTodolistCallback: (titleTL: string, idTL: string) => void
 }
 
 
 export function TodoList(props: TodoListType) {
 
-
   // фильтрация тасок по "All"
   const onClickFilterAll = () => {
-    props.setTaskFilterCallback(props.idTL, "All")
+    props.setFilterTodolistCallback("All", props.idTL)
   }
   // фильтрация тасок по "Active"
   const onClickFilterActive = () => {
-    props.setTaskFilterCallback(props.idTL, "Active")
+    props.setFilterTodolistCallback("Active", props.idTL)
   }
   // фильтрация тасок по "Completed"
   const onClickFilterCompleted = () => {
-    props.setTaskFilterCallback(props.idTL, "Completed")
+    props.setFilterTodolistCallback("Completed", props.idTL)
   }
 
 
@@ -42,7 +44,10 @@ export function TodoList(props: TodoListType) {
   const addNewTaskCallback = (titleItem: string) => {
     props.addTaskCallback(titleItem, props.idTL)
   }
-
+  // ф-ция вызывает колбэк для изменения имени Тудулиста по idTL и newTitle
+  const onChangeTitleTodolist = (titleTL: string) => {
+    props.changeTitleTodolistCallback(titleTL, props.idTL)
+  }
 
   // ОТДЕЛЬНАЯ ТАСКА (props.tasks MAP отдельно по каждой таске)
   let task = props.tasks.map(task => {
@@ -53,7 +58,11 @@ export function TodoList(props: TodoListType) {
 
     const onChangeCheckboxTaskHandler = (e: ChangeEvent<HTMLInputElement>) => {
       let newIsDoneValue = e.currentTarget.checked
-      props.changeTaskStatusCallback(task.id, newIsDoneValue, props.idTL)
+      props.changeStatusTaskCallback(newIsDoneValue, task.id, props.idTL)
+    }
+
+    const onChangeTitleTask = (titleTask: string) => {
+      props.changeTitleTaskCallback(titleTask, task.id, props.idTL)
     }
 
     return (
@@ -64,7 +73,7 @@ export function TodoList(props: TodoListType) {
                onChange={onChangeCheckboxTaskHandler}
         />
         <EditableSpan title={task.title}
-                      editMode={true}/>
+                      onChangeTitle={onChangeTitleTask}/>
         <button onClick={onDeleteTask}></button>
       </div>
     )
@@ -76,7 +85,7 @@ export function TodoList(props: TodoListType) {
       <div className={style.TodoList}>
         <div className={style.titleTL}>
           <EditableSpan title={props.titleTL}
-                        editMode={true}/>
+                        onChangeTitle={onChangeTitleTodolist}/>
           <button onClick={onDeleteTodolist}></button>
         </div>
         <div className={style.inputTaskName}>
@@ -89,31 +98,18 @@ export function TodoList(props: TodoListType) {
 
         </div>
         <div className={style.buttonsFilter}>
-          <button className={props.taskFilterTL === "All" ? style.buttonsActiveFilter : ""}
+          <button className={props.tasksFilterTL === "All" ? style.buttonsActiveFilter : ""}
                   onClick={onClickFilterAll}> All
           </button>
-          <button className={props.taskFilterTL === "Active" ? style.buttonsActiveFilter : ""}
+          <button className={props.tasksFilterTL === "Active" ? style.buttonsActiveFilter : ""}
                   onClick={onClickFilterActive}> Active
           </button>
-          <button className={props.taskFilterTL === "Completed" ? style.buttonsActiveFilter : ""}
+          <button className={props.tasksFilterTL === "Completed" ? style.buttonsActiveFilter : ""}
                   onClick={onClickFilterCompleted}> Completed
           </button>
         </div>
       </div>
     </div>
   </>
-}
-
-type EditableSpanType = {
-  title: string
-  editMode: boolean
-}
-export function EditableSpan(props: EditableSpanType) {
-  let newTitle = props.title
-  return (
-    props.editMode
-    ? <span>{newTitle}</span>
-    : <input/>
-  )
 }
 
