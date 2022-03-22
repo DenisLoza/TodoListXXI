@@ -6,6 +6,7 @@
  - mark completed tasks
  - delete tasks and lists
  - switch between cases (active, completed and deleted) lists
+ - renaming tasks & lists
 
 ### Based on:
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
