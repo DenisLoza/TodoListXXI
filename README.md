@@ -1,4 +1,7 @@
 # TodoList project
+
+## [View The App](https://denisloza.github.io/TodoListXXI/)
+
 ### It is a list of things you need to do or want to do
 ### TodoList allows you to:
 
